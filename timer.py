@@ -14,7 +14,7 @@ split_data = eval(open(filename).read())
 #     print(f"\t\tBest: {split['best']}")
 
 screen = curses.initscr()
-window = curses.newwin(20, 60)
+window = curses.newwin(40, 100)
 
 curses.noecho()
 curses.cbreak()
@@ -27,6 +27,7 @@ paused = False
 current_split = 0
 num_splits = len(split_data["splits"])
 split_times = []
+split_times_shortened = []
 
 start_time = 0
 attempts = 0
@@ -44,9 +45,14 @@ while True:
         else:
             if paused:
                 splits = []
+                if split_data["personal_best"] > split_times[-1]:
+                    split_data["personal_best"] = split_times[-1]
+                    for split in split_data["splits"]:
+                        split["personal_best"] = split_times[split_data["splits"].index(split)]
+                
                 for split in split_data["splits"]:
-                    if split["personal_best"] > split_times[split_data["splits"].index(split)]:
-                        splits.append({"name": split["name"], "best": 0.0, "personal_best": split_times[split_data["splits"].index(split)]})
+                    if split["best"] > split_times_shortened[split_data["splits"].index(split)]:
+                        splits.append({"name": split["name"], "best": split_times_shortened[split_data["splits"].index(split)], "personal_best": split["personal_best"]})
                     else:
                         splits.append(split)
 
@@ -59,11 +65,13 @@ while True:
             active_run = False
             start_time = 0
             split_times = []
+            split_times_shortened = []
             current_split = 0
             paused = False
     elif keypress == curses.KEY_RIGHT and active_run and not paused:
         current_split += 1
         split_times.append(time.time_ns() - start_time)
+        split_times_shortened.append(time.time_ns() - start_time - sum_of_previous_splits)
         if current_split >= num_splits:
             paused = True
             current_split -= 1
@@ -79,17 +87,30 @@ while True:
     draw_y = 5
     for split in split_data["splits"]:
         split_index = split_data["splits"].index(split)
+        sum_of_previous_splits = 0
+        for x in split_times_shortened:
+            sum_of_previous_splits += x
 
         if split_index < current_split and active_run or paused:
-            window.addstr(draw_y, 1, f"{split['name']}\t\t{split_times[split_index] / 1000000000} ({(split_times[split_index] - split['personal_best']) / 1000000000})")
+            window.addstr(draw_y, 1, f"{split['name']}\t\t{split_times[split_index] / 1000000000} ({(split_times_shortened[split_index] - split['personal_best']) / 1000000000}/{(split_times[split_index] - sum([x['personal_best'] for x in split_data['splits'][0:split_index + 1]])) / 1000000000})")
         elif split_index == current_split and active_run or paused:
-            window.addstr(draw_y, 1, f"{split['name']}\t\t{(time.time_ns() - start_time) / 1000000000} ({((time.time_ns() - start_time - split['personal_best']) / 1000000000)}", curses.A_REVERSE)
+            window.addstr(draw_y, 1, f"{split['name']}\t\t{(time.time_ns() - start_time - sum_of_previous_splits) / 1000000000} ({((time.time_ns() - start_time - split['personal_best'] - sum_of_previous_splits) / 1000000000)})", curses.A_REVERSE)
         elif split_index > current_split and active_run or paused:
             window.addstr(draw_y, 1, f"{split['name']}\t\t-")
         else:
             window.addstr(draw_y, 1, f"{split['name']}")
         
         draw_y += 1
+
+    if active_run or paused:
+        if not paused:
+            delta = ((time.time_ns() - start_time) - split_data['personal_best']) / 1000000000
+        
+        draw_y += 1
+        window.addstr(draw_y, 1, f"Delta: {delta}")
+
+    draw_y += 1
+    window.addstr(draw_y, 1, f"Sum of best: {sum([x['best'] for x in split_data['splits']]) / 1000000000}")
 
     window.refresh()
     time.sleep(0.05)
