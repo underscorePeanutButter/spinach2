@@ -37,18 +37,20 @@ while True:
 
     keypress = window.getch()
 
+    current_time = time.time_ns()
+
     if keypress == curses.KEY_BACKSPACE:
         if active_run == False:
             active_run = True
             attempts += 1
-            start_time = time.time_ns()
+            start_time = current_time
         else:
             if paused:
                 splits = []
                 if split_data["personal_best"] > split_times[-1]:
                     split_data["personal_best"] = split_times[-1]
                     for split in split_data["splits"]:
-                        split["personal_best"] = split_times[split_data["splits"].index(split)]
+                        split["personal_best"] = split_times_shortened[split_data["splits"].index(split)]
                 
                 for split in split_data["splits"]:
                     if split["best"] > split_times_shortened[split_data["splits"].index(split)]:
@@ -70,8 +72,8 @@ while True:
             paused = False
     elif keypress == curses.KEY_RIGHT and active_run and not paused:
         current_split += 1
-        split_times.append(time.time_ns() - start_time)
-        split_times_shortened.append(time.time_ns() - start_time - sum_of_previous_splits)
+        split_times.append(current_time - start_time)
+        split_times_shortened.append(current_time - start_time - sum_of_previous_splits)
         if current_split >= num_splits:
             paused = True
             current_split -= 1
@@ -94,7 +96,7 @@ while True:
         if split_index < current_split and active_run or paused:
             window.addstr(draw_y, 1, f"{split['name']}\t\t{split_times[split_index] / 1000000000} ({(split_times_shortened[split_index] - split['personal_best']) / 1000000000}/{(split_times[split_index] - sum([x['personal_best'] for x in split_data['splits'][0:split_index + 1]])) / 1000000000})")
         elif split_index == current_split and active_run or paused:
-            window.addstr(draw_y, 1, f"{split['name']}\t\t{(time.time_ns() - start_time - sum_of_previous_splits) / 1000000000} ({((time.time_ns() - start_time - split['personal_best'] - sum_of_previous_splits) / 1000000000)})", curses.A_REVERSE)
+            window.addstr(draw_y, 1, f"{split['name']}\t\t{(current_time - start_time - sum_of_previous_splits) / 1000000000} ({((current_time - start_time - split['personal_best'] - sum_of_previous_splits) / 1000000000)})", curses.A_REVERSE)
         elif split_index > current_split and active_run or paused:
             window.addstr(draw_y, 1, f"{split['name']}\t\t-")
         else:
@@ -104,10 +106,18 @@ while True:
 
     if active_run or paused:
         if not paused:
-            delta = ((time.time_ns() - start_time) - split_data['personal_best']) / 1000000000
-        
+            delta = ((current_time - start_time) - split_data['personal_best']) / 1000000000
+            elapsed_time = (current_time - start_time) / 1000000000
+            best_possible = (sum_of_previous_splits + sum([x['best'] for x in split_data['splits'][current_split:]])) / 1000000000
+
+        draw_y += 1
+        window.addstr(draw_y, 1, f"Elapsed time: {elapsed_time}")
+
         draw_y += 1
         window.addstr(draw_y, 1, f"Delta: {delta}")
+
+        draw_y += 1
+        window.addstr(draw_y, 1, f"Best possible: {best_possible}")
 
     draw_y += 1
     window.addstr(draw_y, 1, f"Sum of best: {sum([x['best'] for x in split_data['splits']]) / 1000000000}")
