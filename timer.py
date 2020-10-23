@@ -1,11 +1,16 @@
-# Spinach2 speedrun timer (0.1.0)
+# Spinach2 speedrun timer (0.2.1)
 # by _peanutButter
 
 import curses
 import time
+import sys
 
-filename = "flowercup200cc.split"
-split_data = eval(open(filename).read())
+filename = sys.argv[1]
+
+try:
+    split_data = eval(open(filename).read())
+except:
+    sys.exit()
 
 # print(f"Playing {split_data['game']} ({split_data['category']})")
 # for split in split_data["splits"]:
