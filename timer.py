@@ -1,4 +1,4 @@
-# Spinach2 speedrun timer (0.2.2)
+# Spinach2 speedrun timer (0.2.4)
 # by _peanutButter
 
 import curses
@@ -46,7 +46,9 @@ while True:
 
     current_time = time.time_ns() - pause_time
 
-    if keypress == curses.KEY_BACKSPACE:
+    if keypress == curses.KEY_DOWN and not active_run:
+        break
+    elif keypress == curses.KEY_BACKSPACE:
         if active_run == False:
             active_run = True
             attempts += 1
@@ -85,7 +87,7 @@ while True:
         if current_split >= num_splits:
             finished = True
             current_split -= 1
-            
+
             delta = ((current_time - start_time) - split_data['personal_best']) / 1000000000
             elapsed_time = (current_time - start_time) / 1000000000
     # elif keypress == curses.KEY_LEFT and active_run:
