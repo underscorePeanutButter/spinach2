@@ -81,9 +81,13 @@ while True:
         current_split += 1
         split_times.append(current_time - start_time)
         split_times_shortened.append(current_time - start_time - sum_of_previous_splits)
+
         if current_split >= num_splits:
             finished = True
             current_split -= 1
+            
+            delta = ((current_time - start_time) - split_data['personal_best']) / 1000000000
+            elapsed_time = (current_time - start_time) / 1000000000
     # elif keypress == curses.KEY_LEFT and active_run:
     #     current_split -= 1
     elif keypress == curses.KEY_UP and active_run and not finished:
