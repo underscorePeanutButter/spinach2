@@ -115,7 +115,7 @@ while True:
         sum_of_previous_splits = split_times[-1] if not len(split_times) == 0 else 0
 
         if split_index < current_split and active_run or finished:
-            window.addstr(draw_y, 1, f"{split['name']}\t\t{round(split_times[split_index] / 1000000000, 4)} ({round((split_times_shortened[split_index] - split['personal_best']) / 1000000000, 4)}/{round((split_times[split_index] - sum([x['personal_best'] for x in split_data['splits'][0:split_index + 1]])) / 1000000000, 4)}/{round((split_times[split_index] - split['best']) / 1000000000, 4)})")
+            window.addstr(draw_y, 1, f"{split['name']}\t\t{round(split_times[split_index] / 1000000000, 4)} ({round((split_times_shortened[split_index] - split['personal_best']) / 1000000000, 4)}/{round((split_times[split_index] - sum([x['personal_best'] for x in split_data['splits'][0:split_index + 1]])) / 1000000000, 4)}/{round((split_times_shortened[split_index] - split['best']) / 1000000000, 4)})")
         elif (split_index == current_split and active_run or finished) and not paused:
             window.addstr(draw_y, 1, f"{split['name']}\t\t{round((current_time - start_time - sum_of_previous_splits) / 1000000000, 4)} ({round(((current_time - start_time - split['personal_best'] - sum_of_previous_splits) / 1000000000), 4)})", curses.A_REVERSE)
         elif (split_index > current_split and active_run or finished) or (split_index == current_split and paused):
