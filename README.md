@@ -15,3 +15,4 @@ I'll add some detailed installation/setup instructions here sometime in the futu
 - `right arrow key` - split
 - `up arrow key` - soft-toggles a run (pauses/resumes the active run)
 - `down arrow key` - quits the speedrun timer (only works if there is no active run; you can always use `ctrl-c` if needed)
+- `left arrow key` - switches between displaying times in seconds and in minutes
