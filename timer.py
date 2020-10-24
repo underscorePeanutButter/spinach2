@@ -1,4 +1,4 @@
-# Spinach2 speedrun timer (0.2.4)
+# Spinach2 speedrun timer (0.2.7)
 # by _peanutButter
 
 import curses
