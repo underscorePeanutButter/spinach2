@@ -109,9 +109,7 @@ while True:
     draw_y = 5
     for split in split_data["splits"]:
         split_index = split_data["splits"].index(split)
-        sum_of_previous_splits = 0
-        for x in split_times_shortened:
-            sum_of_previous_splits += x
+        sum_of_previous_splits = split_times[-1] if not len(split_times) == 0 else 0
 
         if split_index < current_split and active_run or finished:
             window.addstr(draw_y, 1, f"{split['name']}\t\t{split_times[split_index] / 1000000000} ({(split_times_shortened[split_index] - split['personal_best']) / 1000000000}/{(split_times[split_index] - sum([x['personal_best'] for x in split_data['splits'][0:split_index + 1]])) / 1000000000})")
@@ -128,7 +126,7 @@ while True:
         if not finished and not paused:
             delta = ((current_time - start_time) - split_data['personal_best']) / 1000000000
             elapsed_time = (current_time - start_time) / 1000000000
-            best_possible = (sum_of_previous_splits + sum([x['best'] for x in split_data['splits'][current_split:]])) / 1000000000
+            best_possible = (sum_of_previous_splits + (sum([x["best"] for x in split_data["splits"][current_split:]]))) / 1000000000
 
         draw_y += 1
         window.addstr(draw_y, 1, f"Elapsed time: {elapsed_time}")
