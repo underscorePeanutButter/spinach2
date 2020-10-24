@@ -35,6 +35,8 @@ num_splits = len(split_data["splits"])
 split_times = []
 split_times_shortened = []
 
+time_division_factor = 1000000000
+
 start_time = 0
 pause_time = 0
 attempts = 0
@@ -90,11 +92,14 @@ while True:
 
             sum_of_best = sum([x['best'] for x in split_data['splits']])
             elapsed_time = (current_time - start_time)
-            best_possible = (sum_of_previous_splits + (sum([x["best"] for x in split_data["splits"][current_split:]]))) / 1000000000
-            pb_delta = (elapsed_time - split_data['personal_best']) / 1000000000
-            best_delta = (elapsed_time - sum_of_best) / 1000000000
-    # elif keypress == curses.KEY_LEFT and active_run:
-    #     current_split -= 1
+            best_possible = (sum_of_previous_splits + (sum([x["best"] for x in split_data["splits"][current_split:]]))) / time_division_factor
+            pb_delta = (elapsed_time - split_data['personal_best']) / time_division_factor
+            best_delta = (elapsed_time - sum_of_best) / time_division_factor
+    elif keypress == curses.KEY_LEFT and active_run:
+        if time_division_factor == 1000000000:
+            time_division_factor = 60000000000
+        else:
+            time_division_factor = 1000000000
     elif keypress == curses.KEY_UP and active_run and not finished:
         if not paused:
             paused = True
@@ -115,9 +120,9 @@ while True:
         sum_of_previous_splits = split_times[-1] if not len(split_times) == 0 else 0
 
         if split_index < current_split and active_run or finished:
-            window.addstr(draw_y, 1, f"{split['name']}\t\t{round(split_times[split_index] / 1000000000, 4)} ({round((split_times_shortened[split_index] - split['personal_best']) / 1000000000, 4)}/{round((split_times[split_index] - sum([x['personal_best'] for x in split_data['splits'][0:split_index + 1]])) / 1000000000, 4)}/{round((split_times_shortened[split_index] - split['best']) / 1000000000, 4)})")
+            window.addstr(draw_y, 1, f"{split['name']}\t\t{round(split_times[split_index] / time_division_factor, 4)} ({round((split_times_shortened[split_index] - split['personal_best']) / time_division_factor, 4)}/{round((split_times[split_index] - sum([x['personal_best'] for x in split_data['splits'][0:split_index + 1]])) / time_division_factor, 4)}/{round((split_times_shortened[split_index] - split['best']) / time_division_factor, 4)})")
         elif (split_index == current_split and active_run or finished) and not paused:
-            window.addstr(draw_y, 1, f"{split['name']}\t\t{round((current_time - start_time - sum_of_previous_splits) / 1000000000, 4)} ({round(((current_time - start_time - split['personal_best'] - sum_of_previous_splits) / 1000000000), 4)})", curses.A_REVERSE)
+            window.addstr(draw_y, 1, f"{split['name']}\t\t{round((current_time - start_time - sum_of_previous_splits) / time_division_factor, 4)} ({round(((current_time - start_time - split['personal_best'] - sum_of_previous_splits) / time_division_factor), 4)})", curses.A_REVERSE)
         elif (split_index > current_split and active_run or finished) or (split_index == current_split and paused):
             window.addstr(draw_y, 1, f"{split['name']}\t\t-")
         else:
@@ -129,13 +134,13 @@ while True:
         if not finished and not paused:
             sum_of_best = sum([x['best'] for x in split_data['splits']])
             elapsed_time = (current_time - start_time)
-            best_possible = (sum_of_previous_splits + (sum([x["best"] for x in split_data["splits"][current_split:]]))) / 1000000000
-            possible_time_save = ((split_data["personal_best"] / 1000000000) - best_possible)
-            pb_delta = (elapsed_time - split_data['personal_best']) / 1000000000
-            best_delta = (elapsed_time - sum_of_best) / 1000000000
+            best_possible = (sum_of_previous_splits + (sum([x["best"] for x in split_data["splits"][current_split:]]))) / time_division_factor
+            possible_time_save = ((split_data["personal_best"] / time_division_factor) - best_possible)
+            pb_delta = (elapsed_time - split_data['personal_best']) / time_division_factor
+            best_delta = (elapsed_time - sum_of_best) / time_division_factor
 
         draw_y += 1
-        window.addstr(draw_y, 1, f"Elapsed time: {round(elapsed_time / 1000000000, 4)}")
+        window.addstr(draw_y, 1, f"Elapsed time: {round(elapsed_time / time_division_factor, 4)}")
 
         draw_y += 1
         window.addstr(draw_y, 1, f"PB delta: {round(pb_delta, 4)}")
@@ -150,7 +155,7 @@ while True:
         window.addstr(draw_y, 1, f"Possible time save: {round(possible_time_save, 4)}")
 
         draw_y += 1
-        window.addstr(draw_y, 1, f"Sum of best: {round(sum_of_best / 1000000000, 4)}")
+        window.addstr(draw_y, 1, f"Sum of best: {round(sum_of_best / time_division_factor, 4)}")
 
     if paused:
         draw_y += 2
