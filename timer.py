@@ -1,4 +1,4 @@
-# Spinach2 speedrun timer (0.2.7)
+# Spinach2 speedrun timer (0.2.8)
 # by _peanutButter
 
 import curses
@@ -130,7 +130,7 @@ while True:
             sum_of_best = sum([x['best'] for x in split_data['splits']])
             elapsed_time = (current_time - start_time)
             best_possible = (sum_of_previous_splits + (sum([x["best"] for x in split_data["splits"][current_split:]]))) / 1000000000
-            possible_time_save = (split_data["personal_best"] - best_possible)
+            possible_time_save = ((split_data["personal_best"] / 1000000000) - best_possible)
             pb_delta = (elapsed_time - split_data['personal_best']) / 1000000000
             best_delta = (elapsed_time - sum_of_best) / 1000000000
 
