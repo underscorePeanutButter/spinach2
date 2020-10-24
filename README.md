@@ -10,3 +10,5 @@ I'll add some detailed installation/setup instructions here sometime in the futu
 - `up arrow key` - soft-toggles a run (pauses/resumes the active run)
 - `down arrow key` - quits the speedrun timer (only works if there is no active run; you can always use `ctrl-c` if needed)
 - `left arrow key` - switches between displaying times in seconds and in minutes
+
+Although it isn't enforced in the code, it's important that you do not exceed 24 splits per file, as spinach2 can currently only display that many on screen at one time. A scrolling list of splits will be included in a future update.
