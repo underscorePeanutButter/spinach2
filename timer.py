@@ -7,10 +7,10 @@ import sys
 
 filename = sys.argv[1]
 
-try:
-    split_data = eval(open(filename).read())
-except:
-    sys.exit()
+#try:
+split_data = eval(open(filename).read())
+# except:
+#     sys.exit()
 
 # print(f"Playing {split_data['game']} ({split_data['category']})")
 # for split in split_data["splits"]:
@@ -19,7 +19,7 @@ except:
 #     print(f"\t\tBest: {split['best']}")
 
 screen = curses.initscr()
-window = curses.newwin(40, 100)
+window = curses.newwin(70, 100)
 
 curses.noecho()
 curses.cbreak()

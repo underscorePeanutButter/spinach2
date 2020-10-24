@@ -1,1 +1,13 @@
-{'game': '', 'category': '', 'splits': [{'name': '', 'best': , 'personal_best': }], 'personal_best': , 'attempts': 0}
+{
+	'game': '',
+	'category': '',
+	'splits': [
+		{
+			'name': '',
+			'best': ,
+			'personal_best':
+		}
+	],
+	'personal_best': ,
+	'attempts': 0
+}
