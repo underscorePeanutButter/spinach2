@@ -124,21 +124,26 @@ while True:
 
     if active_run or finished or paused:
         if not finished and not paused:
-            delta = ((current_time - start_time) - split_data['personal_best']) / 1000000000
-            elapsed_time = (current_time - start_time) / 1000000000
+            sum_of_best = sum([x['best'] for x in split_data['splits']])
+            elapsed_time = (current_time - start_time)
             best_possible = (sum_of_previous_splits + (sum([x["best"] for x in split_data["splits"][current_split:]]))) / 1000000000
+            pb_delta = (elapsed_time - split_data['personal_best']) / 1000000000
+            best_delta = (elapsed_time - sum_of_best) / 1000000000
 
         draw_y += 1
-        window.addstr(draw_y, 1, f"Elapsed time: {elapsed_time}")
+        window.addstr(draw_y, 1, f"Elapsed time: {elapsed_time / 1000000000}")
 
         draw_y += 1
-        window.addstr(draw_y, 1, f"Delta: {delta}")
+        window.addstr(draw_y, 1, f"PB delta: {pb_delta}")
+
+        draw_y += 1
+        window.addstr(draw_y, 1, f"Best delta: {best_delta}")
 
         draw_y += 1
         window.addstr(draw_y, 1, f"Best possible: {best_possible}")
 
-    draw_y += 1
-    window.addstr(draw_y, 1, f"Sum of best: {sum([x['best'] for x in split_data['splits']]) / 1000000000}")
+        draw_y += 1
+        window.addstr(draw_y, 1, f"Sum of best: {sum_of_best / 1000000000}")
 
     if paused:
         draw_y += 2
