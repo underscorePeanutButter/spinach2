@@ -71,6 +71,7 @@ while True:
 
                 split_data["splits"] = splits
                 split_data["attempts"] += attempts
+                attempts = 0
                 
                 with open(filename, "w") as file:
                     file.write(str(split_data))
