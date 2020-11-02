@@ -144,6 +144,9 @@ while True:
         window.addstr(draw_y, 1, f"Elapsed time: {round(elapsed_time / time_division_factor, 4)}")
 
         draw_y += 1
+        window.addstr(draw_y, 1, f"Personal best: {round(split_data['personal_best'] / time_division_factor, 4)}")
+
+        draw_y += 1
         window.addstr(draw_y, 1, f"PB delta: {round(pb_delta, 4)}")
 
         draw_y += 1
